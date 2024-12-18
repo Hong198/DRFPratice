@@ -1,0 +1,47 @@
+from django.shortcuts import render
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import viewsets
+
+from api.models import Test
+from api.permissions import IsOwnerOrReadOnly
+from api.serializers import TestSerializer
+
+
+# Create your views here.
+
+class TestAPIView(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary="Test 조회",
+        description="Test 조회중 입니다.",
+        responses={
+            200: TestSerializer(many=True)
+        }
+    )
+    def get(self, request):
+        test = Test.objects.all()
+        serializer = TestSerializer(test, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary="Test 생성",
+        description="Test 생성중 입니다.",
+    )
+    def post(self, request):
+        serializer = TestSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TestViewSet(viewsets.ModelViewSet):
+    queryset = Test.objects.all()
+    serializer_class = TestSerializer
