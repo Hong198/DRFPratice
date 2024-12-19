@@ -5,7 +5,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 
 from api.models import Test
 from api.permissions import IsOwnerOrReadOnly
@@ -45,3 +45,21 @@ class TestAPIView(APIView):
 class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
+
+
+# class TestListAPIVIew(generics.ListCreateAPIView):
+#     queryset = Test.objects.all().order_by("-id")
+#     serializer_class = TestSerializer
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [SessionAuthentication]
+#
+#
+# class TestDetailAPIVIew(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Test.objects.all().order_by("-id")
+#     serializer_class = TestSerializer
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [SessionAuthentication]
+
+class TestView(APIView):
+    def get(self, request):
+        raise ValueError("알수 없는 에러입니다.")
