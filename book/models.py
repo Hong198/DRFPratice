@@ -8,5 +8,9 @@ class Book(models.Model):
     created_dt = models.DateTimeField(verbose_name="생성 일자", auto_now_add=True)
     updated_dt = models.DateTimeField(verbose_name="수정 일자", auto_now=True)
 
+    class Meta:
+        db_table = 'book'
+
     def __str__(self):
         return self.title
+

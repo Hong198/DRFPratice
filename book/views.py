@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, authentication, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -14,6 +14,9 @@ from book.serializers import BookSerializer
 
 # Create your views here.
 class BookListAPIView(APIView):
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
     @extend_schema(
         summary="책 정보",
         description="책 정보 입니다.",
@@ -143,10 +146,11 @@ class BookModelViewSet(viewsets.ModelViewSet):
 
 # def
 class ExampleView(APIView):
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         content = {
-            'status': 'request was permitted'
+            'status': '인증 성공!'
         }
         return Response(content)
