@@ -9,9 +9,12 @@ from .exceptions import *
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
+    if isinstance(exc, ClientError):
+        error = ClientError()
+        return error.response()
+
     if response is None or isinstance(exc, ServerError):
         detail = "\n" + traceback.format_exc()
-        # detail = exc.detail
         error = ServerError()
         error.add_detail(detail=detail)
         return error.response()

@@ -18,13 +18,21 @@ class CustomException(APIException):
         return Response(
             {
                 "success": False,
+                "name": self.name,
                 "message": self.message,
                 "detail": self.detail,
                 "code": self.code,
             }
         )
 
+
 class ServerError(CustomException):
     name = "ServerError"
     message = "서버 에러입니다."
     code = "S001"
+
+
+class ClientError(CustomException):
+    name = "ClientError"
+    message = "클라이언트 에러입니다."
+    code = "C001"

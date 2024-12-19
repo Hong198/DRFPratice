@@ -2,14 +2,17 @@ from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import viewsets, generics
 
-from api.models import Test
+from api.models import Test, Text
 from api.permissions import IsOwnerOrReadOnly
-from api.serializers import TestSerializer
+from api.serializers import TestSerializer, TextSerializer
+from config.exceptions import ClientError
 
 
 # Create your views here.
@@ -46,6 +49,9 @@ class TestViewSet(viewsets.ModelViewSet):
     queryset = Test.objects.all()
     serializer_class = TestSerializer
 
+class TextViewSet(viewsets.ModelViewSet):
+    queryset = Text.objects.all()
+    serializer_class = TextSerializer
 
 # class TestListAPIVIew(generics.ListCreateAPIView):
 #     queryset = Test.objects.all().order_by("-id")
@@ -62,4 +68,5 @@ class TestViewSet(viewsets.ModelViewSet):
 
 class TestView(APIView):
     def get(self, request):
-        raise ValueError("알수 없는 에러입니다.")
+        raise ClientError()
+        # raise ValidationError("잘못된 요청입니다.")
