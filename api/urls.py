@@ -3,11 +3,9 @@ from os.path import basename
 from django.urls import path, include
 from rest_framework import routers
 
-from api.views import TestAPIView, TestViewSet, TestView, TextViewSet
-
+from api.views import TestAPIView, TestViewSet, TestView
 router = routers.DefaultRouter()
 router.register(r"tests", TestViewSet, basename='tests')
-router.register(r"texts", TextViewSet, basename='texts')
 
 app_name = 'api'
 urlpatterns = [

@@ -6,10 +6,11 @@ from .views import BookModelViewSet, BookListAPIView, BookDetailAPIView, Example
 router = routers.DefaultRouter()
 router.register(r'books', BookModelViewSet, basename="books")
 
+app_name="book"
 urlpatterns = [
     path("", include(router.urls)),
     #
-    path("book/", BookListAPIView.as_view(), name="book-detail"),
+    path("book/", BookListAPIView.as_view(), name="book-list"),
     path("book/<int:pk>/", BookDetailAPIView.as_view(), name="book-detail"),
     #
     path("hello/", ExampleView.as_view(), name='hello'),

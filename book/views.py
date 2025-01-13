@@ -10,6 +10,8 @@ from rest_framework.views import APIView
 
 from book.models import Book
 from book.serializers import BookSerializer
+from config.exceptions import ServerError, ClientError
+from utils.openapi import generate_errors_response
 
 
 # Create your views here.
@@ -22,6 +24,36 @@ class BookListAPIView(APIView):
         description="책 정보 입니다.",
         responses={
             200: BookSerializer(many=True),
+            **generate_errors_response([ServerError, ClientError]),
+            400: OpenApiResponse(
+                description="책 정보 리스트 입니다.",
+                response={
+                    "type": "object",
+                    "properties": {
+                        "title": {
+                            "type": "str",
+                            "description": "책 제목",
+                            "example": "example"
+                        },
+                        "content": {
+                            "type": "str",
+                            "description": "책 내용",
+                            "example": "example",
+                        },
+                        "created_dt": {
+                            "type": "datetime",
+                            "description": "생성 날짜",
+                            "example": "2025-01-13T00:43:18.187Z",
+                        },
+                        "updated_dt": {
+                            "type": "datetime",
+                            "description": "업데이트 날짜",
+                            "example": "2025-01-13T00:43:18.187Z",
+                        }
+                    },
+                }
+            ),
+            **generate_errors_response([ServerError, ClientError]),
         },
     )
     def get(self, request):
@@ -36,6 +68,36 @@ class BookListAPIView(APIView):
         request=BookSerializer,
         responses={
             201: OpenApiResponse(BookSerializer, description="책이 성공적으로 생성되었습니다."),
+            **generate_errors_response([ServerError, ClientError]),
+            400:OpenApiResponse(
+                description="책을 생성합니다.",
+                response={
+                    "type":"object",
+                    "properties":{
+                        "title": {
+                            "type": "str",
+                            "description": "책 제목",
+                            "example": "example"
+                        },
+                        "content": {
+                            "type": "str",
+                            "description": "책 내용",
+                            "example": "example",
+                        },
+                        "created_dt": {
+                            "type": "datetime",
+                            "description": "생성 날짜",
+                            "example": "2025-01-13T00:43:18.187Z",
+                        },
+                        "updated_dt": {
+                            "type": "datetime",
+                            "description": "업데이트 날짜",
+                            "example": "2025-01-13T00:43:18.187Z",
+                        }
+                    },
+                }
+            ),
+            **generate_errors_response([ServerError, ClientError]),
         },
     )
     def post(self, request):
@@ -57,6 +119,36 @@ class BookDetailAPIView(APIView):
         description="책 상세 정보 입니다.",
         responses={
             200: BookSerializer,
+            **generate_errors_response([ServerError, ClientError]),
+            400:OpenApiResponse(
+                description="책 세부 정보",
+                response={
+                    "type":"object",
+                    "properties":{
+                        "title":{
+                            "type":"str",
+                            "description":"책 제목",
+                            "example":"책 제목",
+                        },
+                        "content":{
+                            "type":"str",
+                            "description":"책 내용",
+                            "example":"책 내용",
+                        },
+                        "created_dt":{
+                            "type":"datetime",
+                            "description":"책 세부 생성 날짜",
+                            "example":"책 세부 생성 날짜",
+                        },
+                        "updated_dt":{
+                            "type":"datetime",
+                            "description":"책 세부 업데이트 날짜",
+                            "example":"책 세부 업데이트 날짜",
+                        }
+                    }
+                }
+            ),
+            **generate_errors_response([ServerError, ClientError]),
         },
     )
     def get(self, request, pk):
@@ -70,6 +162,35 @@ class BookDetailAPIView(APIView):
         request=BookSerializer,
         responses={
             200: BookSerializer,
+            **generate_errors_response([ServerError, ClientError]),
+            400:OpenApiResponse(
+                description="책 세부 정보 수정",
+                response={
+                    "type":"object",
+                    "properties":{
+                        "title":{
+                            "type":"str",
+                            "description":"책 상세 정보 수정 제목",
+                            "example":"책 제목",
+                        },
+                        "content":{
+                            "type":"str",
+                            "description":"책 상세 정보 수정 내용",
+                            "example":"책 내용",
+                        },
+                        "created_dt":{
+                            "type":"datetime",
+                            "description":"책 상세 정보 수정 생성 날짜",
+                            "example":"책 생성 날짜",
+                        },
+                        "updated_dt":{
+                            "type":"datetime",
+                            "description":"책 상세 정보 수정 업데이트 날짜",
+                            "example":"책 업데이트 날짜",
+                        },
+                    },
+                },
+            )
         },
     )
     def patch(self, request, pk):
@@ -98,50 +219,6 @@ class BookModelViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     # permission_classes = [IsAuthenticated]
-
-    #
-    # @extend_schema(
-    #     summary="Retrieve a list of books",
-    #     description="Returns a paginated list of all books in the database.",
-    #     tags=["Books"],  # Swagger 태그 추가
-    # )
-    # def list(self, request, *args, **kwargs):
-    #     return super().list(request, *args, **kwargs)
-    #
-    # @extend_schema(
-    #     summary="Retrieve a single book",
-    #     description="Fetch a book by its ID.",
-    #     tags=["Books"],
-    # )
-    # def retrieve(self, request, *args, **kwargs):
-    #     return super().retrieve(request, *args, **kwargs)
-    #
-    # @extend_schema(
-    #     summary="Create a new book",
-    #     description="Create a new book record by providing the required data.",
-    #     tags=["Books"],
-    #     request=BookSerializer,  # 요청에 사용되는 Serializer 명시
-    #     responses={201: BookSerializer},  # 응답에 사용되는 Serializer 명시
-    # )
-    # def create(self, request, *args, **kwargs):
-    #     return super().create(request, *args, **kwargs)
-    #
-    # @extend_schema(
-    #     summary="Update a book",
-    #     description="Update an existing book by providing its ID and new data.",
-    #     tags=["Books"],
-    # )
-    # def update(self, request, *args, **kwargs):
-    #     return super().update(request, *args, **kwargs)
-    #
-    # @extend_schema(
-    #     summary="Delete a book",
-    #     description="Delete a book by its ID.",
-    #     tags=["Books"],
-    #     responses={204: None},  # No content for DELETE
-    # )
-    # def destroy(self, request, *args, **kwargs):
-    #     return super().destroy(request, *args, **kwargs)
 
 
 # def

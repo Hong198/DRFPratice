@@ -16,7 +16,7 @@ class TestSerializer(serializers.ModelSerializer):
 
 class TextSerializer(serializers.ModelSerializer):
     file = serializers.CharField(
-        validators=[UniqueValidator(queryset = Text.objects.all(), message="중복되는 이름입니다.")]
+        validators=[UniqueValidator(queryset=Text.objects.all(), message="중복되는 이름입니다.")]
     )
 
     class Meta:
